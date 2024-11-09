@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export default function Questionnaire(){
+export default function DepressionQuestionnaire(){
   const questions = [
     "Little interest or pleasure in doing things.",
     "Feeling down, depressed, or hopeless.",
@@ -36,7 +36,7 @@ export default function Questionnaire(){
 
   return (
     <div className="min-h-screen bg-skin p-6 flex items-center w-full flex-col">
-      <h2 className="text-2xl font-bold text-blue-600 mb-6">Depression Assessment</h2>
+      <h2 className="text-2xl font-bold text-[#008080] mb-6">Depression Assessment</h2>
       
       <form className="w-full w-full bg-skin p-6 space-y-6">
         {questions.map((question, index) => (
@@ -50,8 +50,8 @@ export default function Questionnaire(){
                   key={option.value}
                   className={`cursor-pointer flex-1 p-3 bg-[#FFFFF0] text-#B0B0B0 min-w-[15%] max-w-[20%] min-h-[60px] text-center rounded-lg border ${
                     responses[index] === option.value
-                      ? "bg-blue-500 text-#B0B0B0 border-blue-500"
-                      : "bg-white text-gray-700 border-gray-300 hover:bg-blue-100"
+                      ? "bg-[#20B2A6] text-#B0B0B0 border-blue-500"
+                      : "bg-white text-gray-700 border-gray-300"
                   }`}
                 >
                   <input

@@ -23,7 +23,7 @@ export default function LandingPage(){
             </>
             }
             onClick={handleSignupClick}
-            className="bg-skin hover:bg-skin text-amber-700 hover:text-amber-900 px-1 py-2 rounded"
+            className="bg-skin hover:bg-skin text-amber-700 hover:text-amber-900"
             />
             <Button
             text={
@@ -32,7 +32,7 @@ export default function LandingPage(){
             </>
             }
             onClick={handleLoginClick}
-            className="bg-skin hover:bg-skin text-amber-700 hover:text-amber-900 px-1 py-2 rounded"
+            className="bg-skin hover:bg-skin text-amber-700 hover:text-amber-900"
             />
         </div>
         <div className='absolute bottom-32 right-14'>
@@ -41,7 +41,7 @@ export default function LandingPage(){
                 Healing begins with a conversation. Don't suffer in silence.<br></br>
                 Take this free Questionaire...
             </p>
-            <Button text="Click Me"  onClick={() => navigate('/questionnaire')}/>
+            <Button text="Click Me" className="bg-amber-700 text-white hover:bg-amber-800 rounded" onClick={() => navigate('/QuestionnaireCard')}/>
             </div>
         </div>
     )
