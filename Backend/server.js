@@ -23,7 +23,7 @@ app.use(cors({
 
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/questionnaires', require('./routes/questionnaireRoutes'));
+
 
 // Basic route
 app.get('/', (req, res) => {
