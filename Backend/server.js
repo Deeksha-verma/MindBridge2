@@ -29,6 +29,9 @@ app.use("/api/auth", require("./routes/authRoutes"));
 const assessmentRouter = require("./routes/assessmentRoutes");
 app.use("/api/assessment", assessmentRouter);
 
+const medbotRouter = require("./routes/medbot");
+app.use("/api/medbot", medbotRouter);
+
 // Basic route
 app.get("/", (req, res) => {
   res.send("MindBridge API is running");
