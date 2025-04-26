@@ -54,6 +54,11 @@ export default function DepressionQuestionnaire() {
     setResponses(updatedResponses);
   };
 
+  const submitAssignment = () => {
+    console.log(responses);
+    alert("assignment submitted");
+  };
+
   return (
     <div className="min-h-screen bg-skin p-6 flex items-center w-full flex-col">
       <h2 className="text-2xl font-bold text-[#008080] mb-6">
@@ -106,6 +111,16 @@ export default function DepressionQuestionnaire() {
         <p className="text-gray-600 mt-2">
           Your score is based on your selected responses.
         </p>
+      </div>
+
+      <div className="flex justify-center w-full">
+        <button
+          className="border-1 border-black border bg-black text-white px-4 py-1 rounded-md hover:bg-green-100 hover:text-black mt-6 disabled:hover:text-white disabled:hover:bg-black disabled:cursor-not-allowed"
+          disabled={responses.some((obj) => obj.answer === "")}
+          onClick={submitAssignment}
+        >
+          Submit
+        </button>
       </div>
     </div>
   );
