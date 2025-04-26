@@ -16,6 +16,7 @@ import BreathingExercise from './BreathingExercise';
 import AffirmationClicker from './AffirmationClicker';
 import ColorMemoryGame from './ColorMemoryGame';
 import MoodDetector from './MoodDetector';
+import AboutUs from './AboutUs';
 // import Dashboard from './Dashboard'; // We'll create this next
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
           
           {/* Protected routes */}
           <Route element={<ProtectedRoute />}>
+            <Route path="/about-us" element={<AboutUs/>}/>
             <Route path="/QuestionnaireCard" element={<QuestionnaireCard />} />
             <Route path="/stressquestionnaire" element={<StressQuestionnaire />} />
             <Route path="/anxietyquestionnaire" element={<AnxietyQuestionnaire />} />
