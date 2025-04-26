@@ -1,4 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
+const api = import.meta.env.VITE_BACKEND_URL;
+import axios from "axios";
 
 export default function StressQuestionnaire() {
   const questions = useMemo(
@@ -55,9 +57,19 @@ export default function StressQuestionnaire() {
     setResponses(updatedResponses);
   };
 
-  const submitAssignment = () => {
+  const submitAssignment = async () => {
     console.log(responses);
     alert("assignment submitted");
+
+    try {
+      const response = await axios.post(`${api}assessment/store`, {
+        responses,
+        type: "STRESS",
+      });
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
