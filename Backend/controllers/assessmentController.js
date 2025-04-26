@@ -1,12 +1,24 @@
 const Questionnaire = require("../models/Questionnaire");
 const User = require("../models/User");
 
-module.exports.storeAssignment = (req, res) => {
+module.exports.storeAssignment = async (req, res) => {
   try {
-    console.log(req);
-    const { type, responses } = req.body;
-    console.log(type);
-    console.log(responses);
+    const { type, responses, userId } = req.body;
+    console.log(userId);
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return response
+        .status(404)
+        .json({ message: "User Authentication Invalid" });
+    }
+
+    const assessmentData = {
+      type,
+      response: responses,
+    };
+
+    console.log(user, assessmentData);
 
     return res.status(200).json({ message: "Successfully Stored Assignment" });
   } catch (error) {
