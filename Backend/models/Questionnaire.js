@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
 
 const questionnaireSchema = new mongoose.Schema({
+  assessmentType: {
+    type: String,
+    enum: ["STRESS", "DEPRESSION", "ANXIETY"],
+  },
   response: [
     {
       question: String,

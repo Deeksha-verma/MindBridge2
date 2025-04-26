@@ -1,8 +1,8 @@
-const express = require('express');
-const cors = require('cors');
-const dotenv = require('dotenv');
-const connectDB = require('./config/db');
-const errorHandler = require('./middleware/errorHandler');
+const express = require("express");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const connectDB = require("./config/db");
+const errorHandler = require("./middleware/errorHandler");
 
 // Load environment variables
 dotenv.config();
@@ -16,18 +16,22 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(express.json());
-app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    credentials: true,
+  })
+);
 
 // Routes
-app.use('/api/auth', require('./routes/authRoutes'));
+app.use("/api/auth", require("./routes/authRoutes"));
 
+const assessmentRouter = require("./routes/assessmentRoutes");
+app.use("/api/assessment", assessmentRouter);
 
 // Basic route
-app.get('/', (req, res) => {
-  res.send('MindBridge API is running');
+app.get("/", (req, res) => {
+  res.send("MindBridge API is running");
 });
 
 // Error handler middleware
