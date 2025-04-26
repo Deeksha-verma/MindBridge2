@@ -1,6 +1,6 @@
-const User = require('../models/User');
-const asyncHandler = require('express-async-handler');
-const jwt = require('jsonwebtoken');
+const User = require("../models/User");
+const asyncHandler = require("express-async-handler");
+const jwt = require("jsonwebtoken");
 
 // @desc    Register user
 // @route   POST /api/auth/register
@@ -12,14 +12,14 @@ exports.register = asyncHandler(async (req, res) => {
   const userExists = await User.findOne({ email });
   if (userExists) {
     res.status(400);
-    throw new Error('User already exists');
+    throw new Error("User already exists");
   }
 
   // Create user
   const user = await User.create({
     name,
     email,
-    password
+    password,
   });
 
   if (user) {
@@ -29,12 +29,12 @@ exports.register = asyncHandler(async (req, res) => {
       user: {
         id: user._id,
         name: user.name,
-        email: user.email
-      }
+        email: user.email,
+      },
     });
   } else {
     res.status(400);
-    throw new Error('Invalid user data');
+    throw new Error("Invalid user data");
   }
 });
 
@@ -47,21 +47,21 @@ exports.login = asyncHandler(async (req, res) => {
   // Validate email & password
   if (!email || !password) {
     res.status(400);
-    throw new Error('Please provide an email and password');
+    throw new Error("Please provide an email and password");
   }
 
   // Check for user
-  const user = await User.findOne({ email }).select('+password');
+  const user = await User.findOne({ email }).select("+password");
   if (!user) {
     res.status(401);
-    throw new Error('Invalid credentials');
+    throw new Error("Invalid credentials");
   }
 
   // Check if password matches
   const isMatch = await user.matchPassword(password);
   if (!isMatch) {
     res.status(401);
-    throw new Error('Invalid credentials');
+    throw new Error("Invalid credentials");
   }
 
   res.status(200).json({
@@ -70,8 +70,8 @@ exports.login = asyncHandler(async (req, res) => {
     user: {
       id: user._id,
       name: user.name,
-      email: user.email
-    }
+      email: user.email,
+    },
   });
 });
 
@@ -79,15 +79,16 @@ exports.login = asyncHandler(async (req, res) => {
 // @route   GET /api/auth/me
 // @access  Private
 exports.getMe = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user.id);
-  
+  const user = await User.findById(req.user.id).populate("assessmentResults");
+
   res.status(200).json({
     success: true,
     data: {
       id: user._id,
       name: user.name,
       email: user.email,
-      createdAt: user.createdAt
-    }
+      createdAt: user.createdAt,
+      assessmentResults: user.assessmentResults,
+    },
   });
 });
