@@ -15,6 +15,7 @@ import ColorMemoryGame from "./ColorMemoryGame";
 import MoodDetector from "./MoodDetector";
 import AboutUs from "./AboutUs";
 import Questionnaire from "./Questionnaire";
+import Medbot from "./Medbot";
 // import Dashboard from './Dashboard'; // We'll create this next
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
             <Route path="/MemoryGame" element={<MemoryGame />} />
             <Route path="/BreathingExercise" element={<BreathingExercise />} />
             <Route path="/VoiceMoodAnalyzer" element={<VoiceMoodAnalyzer />} />
+            <Route path="/medbot" element={<Medbot />} />
             <Route
               path="/AffirmationClicker"
               element={<AffirmationClicker />}

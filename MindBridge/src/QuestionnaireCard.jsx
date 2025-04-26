@@ -148,6 +148,11 @@ export default function CardsPage() {
           <h2 className="text-xl font-semibold">Affirmation Clicker</h2>
         </div>
 
+        <div onClick={() => handleNavigate("/medbot")} className={cardClasses}>
+          <FaBrain className="text-4xl mb-2 mx-auto text-pink-300" />
+          <h2 className="text-xl font-semibold">Medbot</h2>
+        </div>
+
         {/* New Game: Color Memory Challenge */}
         <div
           onClick={() => handleNavigate("/ColorMemoryGame")}
