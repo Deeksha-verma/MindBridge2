@@ -81,7 +81,7 @@ export default function StressQuestionnaire() {
                     type="radio"
                     name={`question-${index}`}
                     value={option.value}
-                    checked={responses[index] === option.value}
+                    checked={responses[index]?.answer === option.label}
                     onChange={() =>
                       handleOptionChange(
                         index,
