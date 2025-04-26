@@ -1,26 +1,23 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 const api = import.meta.env.VITE_BACKEND_URL;
 import axios from "axios";
 import { useAuth } from "./context/AuthContext";
+import { useLocation } from "react-router-dom";
 
-export default function StressQuestionnaire() {
+export default function Questionnaire() {
   const { currentUser } = useAuth();
+  const location = useLocation();
 
-  const questions = useMemo(
-    () => [
-      "I feel overwhelmed or stressed out",
-      "I find it hard to manage time and prioritize tasks",
-      "I experience physical symptoms, like headaches or stomachaches",
-      "I struggle to relax or unwind",
-      "I feel irritable or short-tempered",
-      "I find myself worrying excessively about different aspects of life",
-      "I have trouble sleeping due to stress",
-      "I feel tense or anxious in most situations",
-      "I tend to avoid stressful situations even if they’re necessary",
-      "I find it difficult to focus or concentrate on tasks",
-    ],
-    []
-  );
+  const [loading, setLoading] = useState(true);
+  const [type, setType] = useState("");
+  const [questions, setQuestions] = useState([]);
+
+  useEffect(() => {
+    const data = location.state || {};
+    setType(data?.type || "");
+    setQuestions(data?.questions || []);
+    setLoading(false);
+  }, [location.state]);
 
   const options = useMemo(
     () => [
@@ -32,16 +29,38 @@ export default function StressQuestionnaire() {
     []
   );
 
-  const [responses, setResponses] = useState(() =>
-    questions.map((question) => ({
-      question: question,
-      answer: "",
-    }))
-  );
+  const [responses, setResponses] = useState([]);
+
+  useEffect(() => {
+    if (questions.length) {
+      const initialResponses = questions.map((question) => ({
+        question: question,
+        answer: "",
+      }));
+      setResponses(initialResponses);
+    }
+  }, [questions]);
+
   const [fetchingAPIResponse, setFetchingAPIResponse] = useState(false);
   const [feedback, setFeedback] = useState({ analysis: "", suggestion: "" });
 
-  const handleOptionChange = (index, question, answer) => {
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen text-lg font-semibold text-gray-600">
+        Loading...
+      </div>
+    );
+  }
+
+  if (!questions.length) {
+    return (
+      <div className="flex justify-center items-center min-h-screen text-lg font-semibold text-gray-600">
+        Invalid Access 🚫 - Please start from the homepage!
+      </div>
+    );
+  }
+
+  const handleOptionChange = (index, question, answer, value) => {
     const updatedResponses = [...responses];
     updatedResponses[index] = {
       question: question,
@@ -55,7 +74,7 @@ export default function StressQuestionnaire() {
       setFetchingAPIResponse(true);
       const response = await axios.post(`${api}assessment/store`, {
         responses,
-        type: "STRESS",
+        type: type,
         userId: currentUser.id,
       });
       if (response.status == 200) {
@@ -79,7 +98,7 @@ export default function StressQuestionnaire() {
   return (
     <div className="min-h-screen bg-skin p-6 flex items-center w-full flex-col">
       <h2 className="text-2xl font-bold text-[#008080] mb-6">
-        Stress Assessment
+        {type.charAt(0).toUpperCase() + type.slice(1).toLowerCase()} Assessment
       </h2>
 
       {feedback?.analysis ? (
