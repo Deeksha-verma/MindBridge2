@@ -1,8 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
 const api = import.meta.env.VITE_BACKEND_URL;
 import axios from "axios";
+import { useAuth } from "./context/AuthContext";
 
 export default function StressQuestionnaire() {
+  const { currentUser } = useAuth();
+
   const questions = useMemo(
     () => [
       "I feel overwhelmed or stressed out",
@@ -39,7 +42,6 @@ export default function StressQuestionnaire() {
   const [score, setScore] = useState(0);
 
   useEffect(() => {
-    console.log(responses);
     const totalScore = Object.values(responses).reduce(
       (sum, obj) => sum + obj.score,
       0
@@ -58,13 +60,11 @@ export default function StressQuestionnaire() {
   };
 
   const submitAssignment = async () => {
-    console.log(responses);
-    alert("assignment submitted");
-
     try {
       const response = await axios.post(`${api}assessment/store`, {
         responses,
         type: "STRESS",
+        userId: currentUser.id,
       });
       console.log(response);
     } catch (error) {

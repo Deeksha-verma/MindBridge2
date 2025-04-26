@@ -1,5 +1,6 @@
 const Questionnaire = require("../models/Questionnaire");
 const User = require("../models/User");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 module.exports.storeAssignment = async (req, res) => {
   try {
