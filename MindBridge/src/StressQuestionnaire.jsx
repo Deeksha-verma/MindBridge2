@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 const api = import.meta.env.VITE_BACKEND_URL;
 import axios from "axios";
 import { useAuth } from "./context/AuthContext";
