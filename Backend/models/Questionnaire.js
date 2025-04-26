@@ -9,7 +9,6 @@ const questionnaireSchema = new mongoose.Schema({
     {
       question: String,
       answer: String,
-      scorer: Number,
     },
   ],
   analysis: String,

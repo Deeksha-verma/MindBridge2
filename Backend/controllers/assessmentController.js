@@ -5,7 +5,6 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 module.exports.storeAssignment = async (req, res) => {
   try {
     const { type, responses, userId } = req.body;
-    console.log(userId);
 
     const user = await User.findById(userId);
     if (!user) {
