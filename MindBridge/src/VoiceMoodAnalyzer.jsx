@@ -55,6 +55,7 @@ export default function VoiceMoodAnalyzer() {
   };
 
   return (
+    <div className='min-h-[91vh] pt-12 bg-gradient-to-r from-indigo-600/90 via-purple-600/90 to-pink-600/90 backdrop-blur-lg '>
     <div className="p-6 max-w-md mx-auto bg-white rounded-xl shadow-md space-y-4">
       <h2 className="text-2xl font-bold text-center text-blue-600">Voice Mood Analyzer</h2>
 
@@ -71,6 +72,7 @@ export default function VoiceMoodAnalyzer() {
       </div>
 
       <Pie data={chartData} />
+    </div>
     </div>
   );
 }
