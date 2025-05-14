@@ -223,7 +223,7 @@ export default function Questionnaire() {
                     className={`mb-2 p-2 rounded-md w-fit max-w-[70%] ${
                       msg.sender === "user"
                         ? "bg-teal-100 self-end ml-auto text-right"
-                        : "bg-gray-200 self-start mr-auto text-left"
+                        : "bg-gray-200 self-start mr-auto text-left"// good for  chat work 
                     }`}
                   >
                     <div className="text-sm">{msg.text}</div>
