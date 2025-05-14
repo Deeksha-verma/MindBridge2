@@ -47,9 +47,11 @@ module.exports.storeAssignment = async (req, res) => {
     user.assessmentResults.push(questionnaire.id);
     await user.save();
 
-    return res
-      .status(200)
-      .json({ message: "Successfully Stored Assignment", aiResponse });
+    return res.status(200).json({
+      message: "Successfully Stored Assignment",
+      aiResponse,
+      assessmentId: questionnaire.id,
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal Server Error" });
@@ -58,7 +60,13 @@ module.exports.storeAssignment = async (req, res) => {
 
 module.exports.handleFollowUp = async (req, res) => {
   try {
-    const { userId, assessmentId, userMessage } = req.body;
+    console.log("Follow-up request received:", req.body);
+    const {
+      userId,
+      message: userMessage,
+      assessmentId,
+      chatHistory,
+    } = req.body;
 
     // Check if all parameters are provided
     if (!userId || !assessmentId || !userMessage) {
@@ -94,25 +102,39 @@ module.exports.handleFollowUp = async (req, res) => {
     Suggestion:
     ${assessment.suggestion}
 
-    Now, the patient has replied with this message:
-    "${userMessage}"
+    Now this is the conversation history with the patient and you as therapist:
+    ${chatHistory.map((msg) => `${msg.sender}: ${msg.text}`).join("\n")}
 
     Please respond to this message in a warm, human, and therapist-like tone, continuing the conversation naturally. Give only a plain text response.`;
 
     // Generate content from the AI model
     try {
       const result = await model.generateContent(prompt);
+      console.log(result);
 
       // Validate AI response
-      if (!result || !result.response || !result.response.candidates || !result.response.candidates[0].content) {
-        return res.status(500).json({ message: "Failed to get a valid response from the AI model." });
+      if (
+        !result ||
+        !result.response ||
+        !result.response.candidates ||
+        !result.response.candidates[0].content
+      ) {
+        return res.status(500).json({
+          message: "Failed to get a valid response from the AI model.",
+        });
       }
 
-      const therapistReply = result.response.candidates[0].content.parts[0].text.trim();
+      const therapistReply =
+        result.response.candidates[0].content.parts[0].text.trim();
+
+      console.log("Therapist reply:", therapistReply);
+
       return res.status(200).json({ reply: therapistReply });
     } catch (error) {
       console.error("AI model generation error:", error);
-      return res.status(500).json({ message: "Failed to generate a response from the AI model." });
+      return res
+        .status(500)
+        .json({ message: "Failed to generate a response from the AI model." });
     }
   } catch (error) {
     console.error("Follow-up Error:", error);

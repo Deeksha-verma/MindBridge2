@@ -20,71 +20,71 @@ export default function Questionnaire() {
   const [chatHistory, setChatHistory] = useState([]);
   const [assessmentId, setAssessmentId] = useState(null);
 
- const handleFrameCaptured = async (frame) => {
-  const response = await axios.post('http://localhost:8000/sentiment-frame', {
-    image: frame,
-    userId: currentUser.id,
-  });
-
-  // Optionally set live feedback (assuming your backend returns emotion)
-  setLiveSentiment(response.data.emotion || "");
-};
-  const handleFollowUp = async () => {
-  if (!feedbackText.trim()) return;
-
-  setFetchingAPIResponse(true);
-  const userMessage = feedbackText;
-  setFeedbackText(""); // Clear input immediately
-  setChatHistory((prev) => [...prev, { sender: "user", text: userMessage }]);
-
-  try {
-    const response = await axios.post(`${api}assessment/followup`, {
+  const handleFrameCaptured = async (frame) => {
+    const response = await axios.post("http://localhost:8000/sentiment-frame", {
+      image: frame,
       userId: currentUser.id,
-     
-      message: userMessage,
-      
     });
 
-    console.log("Response from follow-up:", response.data); // Log the API response
+    // Optionally set live feedback (assuming your backend returns emotion)
+    setLiveSentiment(response.data.emotion || "");
+  };
+  const handleFollowUp = async () => {
+    if (!feedbackText.trim()) return;
 
-    const therapistReply = response?.data?.aiResponse?.suggestion ?? "Let's talk more about it.";
+    setFetchingAPIResponse(true);
+    const userMessage = feedbackText;
+    setFeedbackText(""); // Clear input immediately
+    setChatHistory((prev) => [...prev, { sender: "user", text: userMessage }]);
 
-    setChatHistory((prev) => [...prev, { sender: "therapist", text: therapistReply }]);
+    try {
+      const response = await axios.post(`${api}assessment/followup`, {
+        userId: currentUser.id,
+        assessmentId: assessmentId,
+        message: userMessage,
+        chatHistory: chatHistory,
+      });
 
-    setFeedback({
-      analysis: response?.data?.aiResponse?.analysis ?? "",
-      suggestion: response?.data?.aiResponse?.suggestion ?? "",
-    });
-  } catch (error) {
-    // Enhanced error logging
-    console.error("Error sending follow-up message:", error);
-    if (error.response) {
-      console.error("Error response:", error.response.data);
-      console.error("Error status:", error.response.status);
-      console.error("Error headers:", error.response.headers);
-    } else if (error.request) {
-      console.error("Error request:", error.request);
-    } else {
-      console.error("Error message:", error.message);
+      console.log("Response from follow-up:", response.data); // Log the API response
+
+      const therapistReply =
+        response?.data?.reply ?? "Let's talk more about it.";
+
+      setChatHistory((prev) => [
+        ...prev,
+        { sender: "therapist", text: therapistReply },
+      ]);
+    } catch (error) {
+      // Enhanced error logging
+      console.error("Error sending follow-up message:", error);
+      if (error.response) {
+        console.error("Error response:", error.response.data);
+        console.error("Error status:", error.response.status);
+        console.error("Error headers:", error.response.headers);
+      } else if (error.request) {
+        console.error("Error request:", error.request);
+      } else {
+        console.error("Error message:", error.message);
+      }
+
+      setChatHistory((prev) => [
+        ...prev,
+        {
+          sender: "therapist",
+          text: "Sorry, I’m having trouble responding. Please try again later.",
+        },
+      ]);
+    } finally {
+      setFetchingAPIResponse(false);
     }
+  };
 
-    setChatHistory((prev) => [
-      ...prev,
-      { sender: "therapist", text: "Sorry, I’m having trouble responding. Please try again later." },
-    ]);
-  } finally {
-    setFetchingAPIResponse(false);
-  }
-};
-
-
-useEffect(() => {
-  const chatContainer = document.getElementById("chat-box");
-  if (chatContainer) {
-    chatContainer.scrollTop = chatContainer.scrollHeight;
-  }
-}, [chatHistory]);
-
+  useEffect(() => {
+    const chatContainer = document.getElementById("chat-box");
+    if (chatContainer) {
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+  }, [chatHistory]);
 
   useEffect(() => {
     const data = location.state || {};
@@ -125,6 +125,7 @@ useEffect(() => {
         userId: currentUser.id,
       });
       if (response.status === 200) {
+        setAssessmentId(response.data.assessmentId);
         setFeedback({
           analysis: response?.data?.aiResponse?.analysis ?? "",
           suggestion: response?.data?.aiResponse?.suggestion ?? "",
@@ -168,12 +169,15 @@ useEffect(() => {
 
   return (
     <div className="min-h-screen bg-skin p-6 flex items-center w-full flex-col">
-      <VideoRecorder recording={recording} onFrameCaptured={handleFrameCaptured} />
+      <VideoRecorder
+        recording={recording}
+        onFrameCaptured={handleFrameCaptured}
+      />
       {liveSentiment && (
-  <div className="fixed top-4 right-4 bg-white text-black p-3 shadow-lg rounded-lg z-50">
-    Current Emotion: <strong>{liveSentiment}</strong>
-  </div>
-)}
+        <div className="fixed top-4 right-4 bg-white text-black p-3 shadow-lg rounded-lg z-50">
+          Current Emotion: <strong>{liveSentiment}</strong>
+        </div>
+      )}
       <h2 className="text-2xl font-bold text-[#008080] mb-6">
         {type.charAt(0).toUpperCase() + type.slice(1).toLowerCase()} Assessment
       </h2>
@@ -202,44 +206,51 @@ useEffect(() => {
               onChange={(e) => setFeedbackText(e.target.value)}
             />
             <button
-              className="mt-4 bg-teal-500 text-white px-5 py-2 rounded-md hover:bg-teal-600 transition"
+              className="mt-4 bg-teal-500 text-white px-5 py-2 rounded-md hover:bg-teal-600 transition disabled:cursor-wait"
               onClick={handleFollowUp}
+              disabled={fetchingAPIResponse}
             >
               Send
             </button>
-           {chatHistory.length > 0 && (    
-  <div className="mt-6 bg-gray-50 p-4 border rounded-lg max-h-60 overflow-y-auto shadow-inner">
-    <h3 className="text-lg font-semibold text-teal-700 mb-2">Live Chat</h3>
-    {chatHistory.map((msg, idx) => (
-      <div
-        key={idx}
-        className={`mb-2 p-2 rounded-md w-fit max-w-[70%] ${
-          msg.sender === "user"
-            ? "bg-teal-100 self-end ml-auto text-right"
-            : "bg-gray-200 self-start mr-auto text-left"
-        }`}
-      >
-        <div className="text-sm">{msg.text}</div>
-      </div>
-    ))}
-  </div>
-)}
-
+            {chatHistory.length > 0 && (
+              <div className="mt-6 bg-gray-50 p-4 border rounded-lg max-h-60 overflow-y-auto shadow-inner">
+                <h3 className="text-lg font-semibold text-teal-700 mb-2">
+                  Live Chat
+                </h3>
+                {chatHistory.map((msg, idx) => (
+                  <div
+                    key={idx}
+                    className={`mb-2 p-2 rounded-md w-fit max-w-[70%] ${
+                      msg.sender === "user"
+                        ? "bg-teal-100 self-end ml-auto text-right"
+                        : "bg-gray-200 self-start mr-auto text-left"
+                    }`}
+                  >
+                    <div className="text-sm">{msg.text}</div>
+                  </div>
+                ))}
+                {fetchingAPIResponse && (
+                  <div className="text-sm text-gray-500 italic">
+                    Therapist is typing...
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Talk to Therapist Button */}
-    <div className="mt-8">
-      <p className="text-lg font-medium mb-2">Prefer human help?</p>
-      <button
-        className="bg-pink-600 text-white px-6 py-2 rounded-md hover:bg-pink-700 transition duration-300"
-        onClick={() => {
-          // Replace below with your preferred navigation or dialog logic
-          window.open("https://meet.google.com/yrh-edda-moa", "_blank");
-        }}
-      >
-        Talk to a Therapist 💬
-      </button>
-    </div>
+          <div className="mt-8">
+            <p className="text-lg font-medium mb-2">Prefer human help?</p>
+            <button
+              className="bg-pink-600 text-white px-6 py-2 rounded-md hover:bg-pink-700 transition duration-300"
+              onClick={() => {
+                // Replace below with your preferred navigation or dialog logic
+                window.open("https://meet.google.com/yrh-edda-moa", "_blank");
+              }}
+            >
+              Talk to a Therapist 💬
+            </button>
+          </div>
         </div>
       ) : fetchingAPIResponse ? (
         <div className="flex flex-col items-center justify-center gap-4 mt-8">
@@ -295,9 +306,9 @@ useEffect(() => {
                 responses.some((obj) => obj.answer === "")
               }
               onClick={() => {
-             setRecording(false); // Stop recording before submitting
-             submitAssignment();  // Then trigger submission
-    }}
+                setRecording(false); // Stop recording before submitting
+                submitAssignment(); // Then trigger submission
+              }}
             >
               {fetchingAPIResponse ? "Submitting..." : "Submit"}
             </button>
