@@ -36,11 +36,11 @@ export default function LandingPage() {
       </div>
 
       {/* Main Message Section */}
-      <div className="absolute bottom-32 right-14 max-w-lg transform hover:rotate-[-1deg] hover:scale-[1.02] transition-transform duration-700 ease-in-out">
-        <h1 className="text-white text-4xl mb-5 animate-typewriter drop-shadow-[0_4px_4px_rgba(0,0,0,0.6)]">
+      <div className="absolute bottom-32 right-14 max-w-lg  hover:scale-[1.02]  ">
+        <h1 className="text-black text-4xl mb-5 animate-typewriter ">
           It's Okay To Not Be Okay
         </h1>
-        <p className="text-xl text-white mb-6 backdrop-blur-md bg-black/40 p-4 rounded-lg shadow-xl animate-fadeIn delay-500">
+        <p className="text-xl text-white mb-6 bg-black/40 p-4 rounded-lg shadow-xl animate-fadeIn delay-500">
           Healing begins with a conversation. Don't suffer in silence.
           <br />
           Take this free questionnaire...

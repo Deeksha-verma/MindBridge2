@@ -18,12 +18,12 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-indigo-600/90 via-purple-600/90 to-pink-600/90 backdrop-blur-lg border-b border-white/20 shadow-lg">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-skin backdrop-blur-lg border-b border-white/20 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
             <Link to="/QuestionnaireCard" className="flex items-center">
-              <span className="text-white text-xl font-bold">
+              <span className="text-black text-xl font-bold">
                 {currentUser ? `Hello, ${currentUser.name}` : "MindBridge"}
               </span>
             </Link>
@@ -33,20 +33,20 @@ export default function Navbar() {
             <div className="ml-10 flex items-center space-x-4">
               <Link
                 to="/QuestionnaireCard"
-                className="text-white hover:bg-white/20 px-3 py-2 rounded-md text-sm font-medium flex items-center transition-all duration-300"
+                className="text-black hover:bg-white/20 px-3 py-2 rounded-md text-sm font-medium flex items-center transition-all duration-300"
               >
                 <Home className="w-4 h-4 mr-2" />
                 Home
               </Link>
               <Link
                 to="/about-us"
-                className="text-white hover:bg-white/20 px-3 py-2 rounded-md text-sm font-medium flex items-center transition-all duration-300"
+                className="text-black hover:bg-white/20 px-3 py-2 rounded-md text-sm font-medium flex items-center transition-all duration-300"
               >
                 <Info className="w-4 h-4 mr-2" />
                 About Us
               </Link>
               <button
-                className="text-white bg-white/20 hover:bg-white/30 px-4 py-2 rounded-md text-sm font-medium flex items-center transition-all duration-300 hover:shadow-yellow-300/40 border border-white/30"
+                className="text-black bg-white/20 hover:bg-white/30 px-4 py-2 rounded-md text-sm font-medium flex items-center transition-all duration-300 hover:shadow-yellow-300/40 border border-white/30"
                 onClick={handleLogout} 
               >
                 <LogOut className="w-4 h-4 mr-2" />
